@@ -1,7 +1,6 @@
 """
-Global Weather Repository Dataset Generator
-Generates realistic 40+ feature multi-city global weather time series data
-matching Nelgiriyewithana's Kaggle Global Weather Repository schema.
+generates synthetic weather dataset matching kaggle global weather repository schema
+author: hrishikesh yadav
 """
 import os
 import numpy as np
@@ -36,7 +35,7 @@ cities = [
 ]
 
 start_date = datetime(2023, 7, 1)
-days = 92 # 3 months of daily observations
+days = 92
 records = []
 
 conditions_pool = ["Sunny", "Partly cloudy", "Clear", "Overcast", "Patchy rain possible", "Moderate rain", "Heavy rain", "Thundery outbreaks possible"]
@@ -46,31 +45,31 @@ for d in range(days):
     day_str = curr_date.strftime("%Y-%m-%d %H:%M")
     epoch = int(curr_date.timestamp())
     
-    # Global seasonal cycle
+    # seasonal wave
     season_factor = np.sin(2 * np.pi * d / 365)
     
     for c in cities:
-        # Base temp with daily diurnal noise and regional seasonality
+        # base temperature with natural variance
         temp_c = c["base_temp"] + (c["temp_amp"] * season_factor if c["lat"] > 0 else -c["temp_amp"] * season_factor)
         temp_c += np.random.normal(0, 2.2)
         
-        # Inject occasional anomaly (heatwave / cold snap)
+        # small chance of heatwave or cold snap anomaly
         if np.random.rand() < 0.03:
             temp_c += np.random.choice([6.5, -7.0])
             
         temp_c = round(temp_c, 1)
         temp_f = round((temp_c * 9/5) + 32, 1)
         
-        # Humidity negatively correlated with temp + random noise
+        # humidity calculation
         humidity = int(np.clip(70 - (temp_c - c["base_temp"]) * 2.5 + np.random.normal(0, 10), 15, 98))
         
-        # Precipitation probability higher when humidity high
+        # rain probability
         precip_chance = max(0, (humidity - 55) / 45)
         is_rain = np.random.rand() < (precip_chance * 0.7)
         precip_mm = round(np.random.exponential(4.5) if is_rain else 0.0, 1)
         precip_in = round(precip_mm / 25.4, 2)
         
-        # Condition selection based on precip & cloud
+        # condition text
         cloud = int(np.clip(humidity * 0.9 + np.random.normal(0, 15), 0, 100))
         if precip_mm > 15.0:
             condition = "Heavy rain"
@@ -104,7 +103,7 @@ for d in range(days):
         gust_kph = round(wind_kph * np.random.uniform(1.2, 1.8), 1)
         gust_mph = round(gust_kph * 0.621371, 1)
         
-        # Air quality parameters (correlated with industrial density, wind speed dispersion, humidity)
+        # air quality measurements
         aq_base = 65.0 if c["city"] in ["New Delhi", "Cairo", "Mumbai", "Bangkok"] else 18.0
         dispersion = max(0.4, 1.0 - (wind_kph / 60.0))
         pm25 = round(np.clip(aq_base * dispersion + np.random.normal(0, 8), 4, 380), 1)
@@ -165,5 +164,4 @@ for d in range(days):
 df = pd.DataFrame(records)
 out_csv = "/Users/rishii/pm-accelerator-weather-forecast/data/Global_Weather_Repository.csv"
 df.to_csv(out_csv, index=False)
-print(f"Generated {len(df)} records across {len(cities)} cities with {len(df.columns)} features.")
-print(f"Saved to {out_csv}")
+print(f"saved {len(df)} records to {out_csv}")
