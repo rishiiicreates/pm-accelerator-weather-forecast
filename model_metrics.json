@@ -1,0 +1,37 @@
+[
+  {
+    "Model": "Ridge AutoRegressive",
+    "RMSE (\u00b0C)": 0.721,
+    "MAE (\u00b0C)": 0.598,
+    "R\u00b2 Score": -0.3185,
+    "MAPE (%)": 2.25
+  },
+  {
+    "Model": "Random Forest Regressor",
+    "RMSE (\u00b0C)": 0.554,
+    "MAE (\u00b0C)": 0.444,
+    "R\u00b2 Score": 0.2229,
+    "MAPE (%)": 1.65
+  },
+  {
+    "Model": "Gradient Boosting (GBM)",
+    "RMSE (\u00b0C)": 0.541,
+    "MAE (\u00b0C)": 0.45,
+    "R\u00b2 Score": 0.2589,
+    "MAPE (%)": 1.68
+  },
+  {
+    "Model": "HistGradientBoosting",
+    "RMSE (\u00b0C)": 0.589,
+    "MAE (\u00b0C)": 0.466,
+    "R\u00b2 Score": 0.1193,
+    "MAPE (%)": 1.73
+  },
+  {
+    "Model": "Ensemble (Blended Multi-Model)",
+    "RMSE (\u00b0C)": 0.558,
+    "MAE (\u00b0C)": 0.456,
+    "R\u00b2 Score": 0.21,
+    "MAPE (%)": 1.7
+  }
+]
